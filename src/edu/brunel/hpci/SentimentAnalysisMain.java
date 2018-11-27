@@ -1,12 +1,13 @@
 package edu.brunel.hpci;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
@@ -17,32 +18,23 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class SentimentAnalysisMain {
 
 	static HashMap<String, Integer> sentiments;
+	//static HashMap<Long, String> tweets;
 	
 	public static void main(String[] args) throws IllegalArgumentException, IOException, ClassNotFoundException, InterruptedException {
 		Configuration conf = new Configuration();
 		sentiments = new HashMap<String, Integer>();
+		//tweets = new HashMap<Long, String>();
 		
-		if (args.length != 4) {
-			System.out.println("Mismatch in number of input parameters");
+		if (args.length != 3) {
+			System.out.println("Need three input parameters. Dictionary path, tweet file path, output folder path");
 			System.exit(-1);
 		}
 		
-		conf.set("FilterValue", args[3]);
-		Job job = Job.getInstance(conf, "Filter Temperature");
+		sentiments = CreateSentimentMap(args[0]);
+		//tweets = CreateTweetMap(args[1]);
+
+		Job job = Job.getInstance(conf, "Sentiment Analysis");
 		job.setJarByClass(SentimentAnalysisMain.class);
-		
-		String word;
-		Integer score;
-				
-		Path dictionaryPath  = new Path(args[0]);
-		Scanner scanner = new Scanner((Readable) dictionaryPath);
-		while (scanner.hasNextLine()) {
-			String lines = scanner.nextLine();
-			String[] line = lines.split("\t");
-			 word = line[0];
-			 score = Integer.parseInt(line[1]);	
-			 sentiments.put(word, score);
-		}
 		
 		FileInputFormat.addInputPath(job, new Path(args[1]));
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
@@ -57,4 +49,20 @@ public class SentimentAnalysisMain {
 
 	}
 
+	private static HashMap<String, Integer> CreateSentimentMap(String URI) throws IOException {
+		FileInputStream input = new FileInputStream(URI);
+		BufferedReader br = new BufferedReader(new InputStreamReader(input, Charset.forName("UTF-8")));
+		String eachLine, word;
+		Integer score;
+		String[] values;
+		HashMap<String, Integer> sentiments = new HashMap<String, Integer>();
+		while ((eachLine = br.readLine()) != null) {
+			values = eachLine.split("\t");
+			word = values[0];
+			score = Integer.parseInt(values[1]);
+			sentiments.put(word, score);
+		}
+		br.close();
+		return sentiments;
+	}
 }
