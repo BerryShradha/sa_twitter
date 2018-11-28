@@ -2,19 +2,17 @@ package edu.brunel.hpci;
 
 import java.io.IOException;
 
-import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 
-public class SentimentAnalysisReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+public class SentimentAnalysisReducer extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
 
 	@Override
 	public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-		double maxTemperature = 0;
-		for (DoubleWritable value: values) {
-			maxTemperature = Math.max(maxTemperature,  value.get());
+		int scoreCount = 0;
+		for (IntWritable value: values) {
+			scoreCount += Integer.parseInt(value.toString());
 		}
-		context.write(key, new DoubleWritable(maxTemperature));
+		context.write(key, new IntWritable(scoreCount));
 	}
 }
