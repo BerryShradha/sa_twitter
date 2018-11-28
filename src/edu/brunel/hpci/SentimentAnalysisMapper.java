@@ -18,9 +18,11 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {	
-		String[] line = value.toString().split(",");
+		/*String[] line = value.toString().split(",");
+		System.out.println("Size of line is :::::" + line.length);
 		//tweetId = Long.parseLong(line[7]);
-		String tweet = line[0];
+		String tweet = line[0]; */
+		String tweet = value.toString();
 		List<String> words = new ArrayList<String>();
 		words = Arrays.asList(tweet.split(" "));
 		score = 0;
@@ -29,10 +31,10 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 				score += SentimentAnalysisMain.sentiments.get(eachWord);
 			}
 		}
-		if (score != 0) {
+		//if (score != 0) {
 			IntWritable writableScore = new IntWritable(score);
 			context.write(writableScore, one);
-		}
+		//}
 	}
 
 	/*private HashMap<Long, String> CreateTweetMap(String URI) throws IOException {
