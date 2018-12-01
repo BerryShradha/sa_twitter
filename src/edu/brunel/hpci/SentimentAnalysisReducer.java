@@ -7,6 +7,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 public class SentimentAnalysisReducer extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
 
+	/**
+	 * Original Reducer
+	 */
 	@Override
 	public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 		int scoreCount = 0;
@@ -15,4 +18,13 @@ public class SentimentAnalysisReducer extends Reducer<IntWritable, IntWritable, 
 		}
 		context.write(key, new IntWritable(scoreCount));
 	}
+	
+	//@Override
+	/*public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+		//int scoreCount = 0;
+		for (IntWritable value: values) {
+			context.write(key, value);
+		}
+		
+	}*/
 }
