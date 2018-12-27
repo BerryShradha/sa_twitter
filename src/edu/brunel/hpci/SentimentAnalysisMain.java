@@ -17,12 +17,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class SentimentAnalysisMain {
 
 	static HashMap<String, Integer> sentiments;
-	//static HashMap<Long, String> tweets;
 	
 	public static void main(String[] args) throws IllegalArgumentException, IOException, ClassNotFoundException, InterruptedException {
 		Configuration conf = new Configuration();
 		sentiments = new HashMap<String, Integer>();
-		//tweets = new HashMap<Long, String>();
 		
 		if (args.length != 3) {
 			System.out.println("Need three input parameters. Dictionary path, tweet file path, output folder path");
@@ -30,11 +28,9 @@ public class SentimentAnalysisMain {
 		}
 		
 		sentiments = CreateSentimentMap(args[0]);
-		//tweets = CreateTweetMap(args[1]);
 
 		Job job = Job.getInstance(conf, "Sentiment Analysis");
 		job.setJarByClass(SentimentAnalysisMain.class);
-		
 		FileInputFormat.addInputPath(job, new Path(args[1]));
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
 		
@@ -45,7 +41,6 @@ public class SentimentAnalysisMain {
 		job.setOutputValueClass(IntWritable.class);
 		
 		System.exit(job.waitForCompletion(true)? 0 : 1);
-
 	}
 
 	private static HashMap<String, Integer> CreateSentimentMap(String URI) throws IOException {

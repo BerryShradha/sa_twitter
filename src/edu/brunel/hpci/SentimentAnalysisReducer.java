@@ -8,7 +8,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 public class SentimentAnalysisReducer extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
 
 	/**
-	 * Original Reducer
+	 * Reducer to aggregate tweet count for each sentiment score.
 	 */
 	@Override
 	public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {

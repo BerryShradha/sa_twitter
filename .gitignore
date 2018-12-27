@@ -3,3 +3,6 @@
 /target/
 /bin/
 .classpath
+**.log
+**.lock
+.metadata
