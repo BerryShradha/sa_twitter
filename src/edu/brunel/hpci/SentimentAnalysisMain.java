@@ -14,6 +14,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.log4j.Logger;
 
 public class SentimentAnalysisMain {
 
@@ -21,14 +22,15 @@ public class SentimentAnalysisMain {
 	static HashMap<String, Integer> sentimentPhrases;
 	
 	public static void main(String[] args) throws IllegalArgumentException, IOException, ClassNotFoundException, InterruptedException {
+		final Logger logger = Logger.getLogger(SentimentAnalysisMapper.class);
 		long startTime = System.currentTimeMillis();
-		System.out.println("Start time: " + startTime);
+		logger.info("Start time: " + startTime);
 		Configuration conf = new Configuration();
 		sentimentWords = new HashMap<String, Integer>();
 		sentimentPhrases = new HashMap<String, Integer>();
 		
 		if (args.length != 3) {
-			System.out.println("Need three input parameters. Dictionary path, tweet file path, output folder path");
+			logger.info("Need three input parameters. Dictionary path, tweet file path, output folder path");
 			System.exit(-1);
 		}
 		
@@ -46,12 +48,11 @@ public class SentimentAnalysisMain {
 		
 		if (job.waitForCompletion(true)) {
 			long endTime = System.currentTimeMillis();
-			System.out.println("End time: " + endTime);
+			logger.info("End time: " + endTime);
 			long timeDiff = endTime - startTime;
-			System.out.println("Time taken: " + timeDiff);
+			logger.info("Time taken: " + timeDiff);
 			System.exit(0);
 		}
-		//System.exit(job.waitForCompletion(true)? 0 : 1);
 	}
 
 	private static void CreateSentimentMap(String URI) throws IOException {
