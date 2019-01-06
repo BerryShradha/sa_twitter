@@ -39,7 +39,7 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 		//Check for phrases from dictionary
 		for (String eachPhrase : SentimentAnalysisMain.sentimentPhrases.keySet()) {
 			if (tweet.trim().contains(eachPhrase)) {
-				logger.info("Phrase matched: " + eachPhrase);
+				//logger.info("Phrase matched: " + eachPhrase);
 				score += SentimentAnalysisMain.sentimentPhrases.get(eachPhrase);
 				tweet = tweet.replace(eachPhrase, "");
 			}
@@ -51,7 +51,7 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 			for (String eachWord : words) {
 				eachWord = eachWord.toLowerCase();
 				if (SentimentAnalysisMain.sentimentWords.containsKey(eachWord)) {
-						logger.info("Word matched: " + eachWord);
+						//logger.info("Word matched: " + eachWord);
 					score += SentimentAnalysisMain.sentimentWords.get(eachWord);
 				}
 			}
