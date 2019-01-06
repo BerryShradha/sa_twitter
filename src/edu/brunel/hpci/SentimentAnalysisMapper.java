@@ -70,7 +70,6 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 			valid = false;
 		if (valid && tweetRow.size() < 16) //Ensure minimum columns present
 			valid = false;
-		if (valid)
 		if (valid && tweetRow.get(size - RETWEET_COLUMN).equals("TRUE")) //Remove retweets
 			valid = false; 
 		if (valid) {
