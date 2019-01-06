@@ -9,6 +9,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 
 public class TwitterInfoBean implements WritableComparable<TwitterInfoBean>{
+
 	private Text tweetDesc;
 	private Text dateCreated;
 	private IntWritable sentimentScore;
@@ -29,6 +30,11 @@ public class TwitterInfoBean implements WritableComparable<TwitterInfoBean>{
 		this.sentimentScore = sentimentScore;
 	}
 
+	@Override
+	public String toString() {
+		return "TwitterInfoBean [tweetDesc=" + tweetDesc + ", dateCreated=" + dateCreated + ", sentimentScore="
+				+ sentimentScore + "]";
+	}
 
 	@Override
 	public int hashCode() {

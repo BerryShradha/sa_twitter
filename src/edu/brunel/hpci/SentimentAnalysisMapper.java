@@ -61,6 +61,7 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, TwitterI
 			String tweetCreatedDate = getTweetDate(line);
 			bean.setDateCreated(new Text(null == tweetCreatedDate ? "" :  tweetCreatedDate));
 			bean.setSentimentScore(new IntWritable(score));
+			System.out.println("MAPPER::Input key: " + key + " Input value: " + value + " Output key: " + bean.toString() + " Output value: " + one);
 			context.write(bean, one);
 		}
 

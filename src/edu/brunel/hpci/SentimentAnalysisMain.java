@@ -40,6 +40,7 @@ public class SentimentAnalysisMain {
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
 		
 		job.setMapperClass(SentimentAnalysisMapper.class);
+		job.setCombinerClass(SentimentAnalysisCombiner.class);
 		job.setReducerClass(SentimentAnalysisReducer.class);
 		
 		job.setOutputKeyClass(TwitterInfoBean.class);
