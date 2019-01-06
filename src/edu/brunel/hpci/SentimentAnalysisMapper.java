@@ -30,15 +30,10 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {	
 		List<String> line = new ArrayList<String>(Arrays.asList(value.toString().split(",",-1)));
-			logger.info("Size of row is: " + line.size());
-		//int count = 1;
+		//logger.info("Size of row is: " + line.size());
 		score = 0;
-		/*for (String s : line) {
-				logger.info("Line#" + count+ "Text: " + s);
-			count++;
-		}*/
 		String tweet = cleanTweet(line); //Call function to perform cleanup
-		logger.info("Tweet is: " + tweet + " :: Empty: " + tweet.isEmpty());
+		//logger.info("Tweet is: " + tweet + " :: Empty: " + tweet.isEmpty());
 		if (line.get(0).startsWith("\"text\"") || line.get(0).startsWith("text"))
 			return;
 		//Check for phrases from dictionary
@@ -61,7 +56,7 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 				}
 			}
 
-			logger.info("Tweet is: " + tweet + " Score is: " + score);
+			//logger.info("Tweet is: " + tweet + " Score is: " + score);
 			IntWritable writableScore = new IntWritable(score);
 			context.write(writableScore, one);
 		}

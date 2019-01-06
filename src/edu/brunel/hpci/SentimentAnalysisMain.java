@@ -50,7 +50,6 @@ public class SentimentAnalysisMain {
 			System.out.println("Time taken: " + timeDiff);
 			System.exit(0);
 		}
-		//System.exit(job.waitForCompletion(true)? 0 : 1);
 	}
 
 	private static void CreateSentimentMap(String URI) throws IOException {
