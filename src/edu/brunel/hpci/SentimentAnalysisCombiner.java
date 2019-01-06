@@ -16,7 +16,6 @@ public class SentimentAnalysisCombiner extends Reducer<TwitterInfoBean, IntWrita
 		for (IntWritable value: values) {
 			scoreCount += Integer.parseInt(value.toString());
 		}
-		System.out.println("COMBINER::Input key: " + key + " Input value: " + values + " Output key: " + key.toString() + " Output value: " + scoreCount);
 		context.write(key, new IntWritable(scoreCount));
 	}
 }
