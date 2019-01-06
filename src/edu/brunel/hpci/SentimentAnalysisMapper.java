@@ -15,13 +15,11 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-//import org.apache.log4j.Logger;
 
-public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, /*IntWritable*/Text, IntWritable> {
+public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, TwitterInfoBean, IntWritable> {
 
 	private Integer score;
 	private IntWritable one = new IntWritable(1);
-	//private static final Logger logger = Logger.getLogger(SentimentAnalysisMapper.class);
 
 	/**
 	 * Mapper to calculate score of each tweet
@@ -34,22 +32,17 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, /*IntWri
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {	
 		List<String> line = new ArrayList<String>(Arrays.asList(value.toString().split(",",-1)));
-			//logger.info("Size of row is: " + line.size());
-		//int count = 1;
 		score = 0;
-		/*for (String s : line) {
-				logger.info("Line#" + count+ "Text: " + s);
-			count++;
-		}*/
 		String tweet = cleanTweet(line); //Call function to perform cleanup
-		//logger.info("Tweet is: " + tweet + " :: Empty: " + tweet.isEmpty());
 		if (line.get(0).startsWith("\"text\"") || line.get(0).startsWith("text"))
 			return;
+		
+		TwitterInfoBean bean = new TwitterInfoBean();
+		bean.setTweetDesc(new Text(tweet));
+		
 		//Check for phrases from dictionary
 		for (String eachPhrase : SentimentAnalysisMain.sentimentPhrases.keySet()) {
 			if (tweet.trim().contains(eachPhrase)) {
-				//System.out.println(eachPhrase);
-				//System.out.println("Score: " + SentimentAnalysisMain.sentimentPhrases.get(eachPhrase));
 				score += SentimentAnalysisMain.sentimentPhrases.get(eachPhrase);
 				tweet = tweet.replace(eachPhrase, "");
 			}
@@ -61,17 +54,14 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, /*IntWri
 			for (String eachWord : words) {
 				eachWord = eachWord.toLowerCase();
 				if (SentimentAnalysisMain.sentimentWords.containsKey(eachWord)) {
-						//logger.info("Word matched: " + eachWord);
 					score += SentimentAnalysisMain.sentimentWords.get(eachWord);
 				}
 			}
 			
 			String tweetCreatedDate = getTweetDate(line);
-			//logger.info("Tweet is: " + tweet + " Score is: " + score);
-			//IntWritable writableScore = new IntWritable(score);
-			//context.write(writableScore, one);
-			Text writableScore = new Text(tweetCreatedDate + "::" + score);
-			context.write(writableScore, one);
+			bean.setDateCreated(new Text(null == tweetCreatedDate ? "" :  tweetCreatedDate));
+			bean.setSentimentScore(new IntWritable(score));
+			context.write(bean, one);
 		}
 
 	}
@@ -145,11 +135,8 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, /*IntWri
 		} catch (ParseException e) {
 			//Check next column. CSV might have misplaced rows where column values have shifted by 1
 			try {
-				//System.out.println("Into catch1" + tweetRow.get(tweetRow.size()-CREATED_DATE_COLUMN + 1));
 				date = dateFormat.parse(tweetRow.get(tweetRow.size() - CREATED_DATE_COLUMN + 1));
-				//System.out.println("catch1::Date okay " + date);
 			} catch (ParseException e1) {
-				//System.out.println("Into catch2");
 				//Still error. Don't check any further. Return null.
 				return null;
 			}
