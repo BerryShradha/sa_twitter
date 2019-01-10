@@ -11,6 +11,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+//import org.apache.log4j.Logger;
 
 public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
@@ -27,6 +28,7 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 	 */
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {	
+		//final Logger logger = Logger.getLogger(SentimentAnalysisMapper.class);
 		List<String> line = new ArrayList<String>(Arrays.asList(value.toString().split(",",-1)));
 		score = 0;
 		String tweet = cleanTweet(line); //Call function to perform cleanup
@@ -34,7 +36,8 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 			return;
 		//Check for phrases from dictionary
 		for (String eachPhrase : SentimentAnalysisMain.sentimentPhrases.keySet()) {
-			if (tweet.trim().contains(eachPhrase)) {
+			if (tweet.trim().toLowerCase().contains(eachPhrase)) {
+				//logger.info("Phrase matched:" + eachPhrase);
 				score += SentimentAnalysisMain.sentimentPhrases.get(eachPhrase);
 				tweet = tweet.replace(eachPhrase, "");
 			}
@@ -46,6 +49,7 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, IntWrita
 			for (String eachWord : words) {
 				eachWord = eachWord.toLowerCase();
 				if (SentimentAnalysisMain.sentimentWords.containsKey(eachWord)) {
+					//logger.info("Word matched:" + eachWord);
 					score += SentimentAnalysisMain.sentimentWords.get(eachWord);
 				}
 			}
