@@ -42,7 +42,7 @@ public class SentimentAnalysisMapper extends Mapper<LongWritable, Text, TwitterI
 		
 		//Check for phrases from dictionary
 		for (String eachPhrase : SentimentAnalysisMain.sentimentPhrases.keySet()) {
-			if (tweet.trim().contains(eachPhrase)) {
+			if (tweet.trim().toLowerCase().contains(eachPhrase)) {
 				score += SentimentAnalysisMain.sentimentPhrases.get(eachPhrase);
 				tweet = tweet.replace(eachPhrase, "");
 			}
